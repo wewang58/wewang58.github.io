@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Contribution Summary - Wen Wang</title>
+  <style>
+    :root {
+      --primary: #ee0000;
+      --bg: #0f1117;
+      --bg-card: #1a1d28;
+      --text: #e4e4e7;
+      --text-muted: #9ca3af;
+      --border: #2a2d3a;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --purple: #a855f7;
+      --orange: #f59e0b;
+      --cyan: #06b6d4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── Language toggle ── */
+    #lang-toggle { display: none; }
+    .lang-cn { display: none; }
+    #lang-toggle:checked ~ header .lang-en,
+    #lang-toggle:checked ~ div .lang-en,
+    #lang-toggle:checked ~ footer .lang-en { display: none; }
+    #lang-toggle:checked ~ header .lang-cn,
+    #lang-toggle:checked ~ div .lang-cn,
+    #lang-toggle:checked ~ footer .lang-cn { display: inline; }
+
+    .lang-switch { display: flex; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .lang-switch label { padding: 7px 16px; font-size: 0.85rem; cursor: pointer; color: var(--text-muted); background: transparent; user-select: none; }
+    .lang-switch .lbl-en { background: var(--primary); color: #fff; font-weight: 600; }
+    #lang-toggle:checked ~ header .lang-switch .lbl-en { background: transparent; color: var(--text-muted); font-weight: 400; }
+    #lang-toggle:checked ~ header .lang-switch .lbl-cn { background: var(--primary); color: #fff; font-weight: 600; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1d28 0%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 48px 0 40px;
+      position: relative;
+    }
+    header::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--orange), var(--blue), var(--purple));
+    }
+    .header-content { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+    .header-left h1 { font-size: 2.2rem; font-weight: 700; }
+    .header-left .subtitle { color: var(--text-muted); font-size: 1rem; margin-top: 6px; }
+    .header-left .subtitle strong { color: var(--primary); }
+    .header-left .meta { color: var(--text-muted); font-size: 0.88rem; margin-top: 10px; display: flex; flex-wrap: wrap; gap: 4px 20px; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+      margin: -30px 0 48px; position: relative; z-index: 1;
+    }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 16px; text-align: center; }
+    .stat-card .num {
+      font-size: 2rem; font-weight: 700; display: block;
+      background: linear-gradient(135deg, var(--primary), var(--orange));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-card .label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 24px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title::before { content: ''; width: 4px; height: 24px; background: var(--primary); border-radius: 2px; }
+    section { margin-bottom: 48px; }
+
+    /* ── Charts ── */
+    .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .chart-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .chart-box h3 { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 16px; font-weight: 500; }
+    .chart-box svg { display: block; width: 100%; height: auto; }
+
+    /* ── Highlight cards ── */
+    .highlight-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .highlight-grid .span2 { grid-column: span 2; }
+    .highlight-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; display: flex; gap: 16px; align-items: flex-start;
+    }
+    .highlight-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .highlight-card h4 { font-size: 0.95rem; margin-bottom: 6px; color: var(--text); }
+    .highlight-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* ── Repo section cards ── */
+    .section-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+    .section-header { background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .section-header h2 { font-size: 1rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 10px; }
+    .section-header h2::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; flex-shrink: 0; }
+    .section-body { padding: 20px; }
+
+    .badge { font-size: 0.78rem; padding: 2px 10px; border-radius: 100px; font-weight: 600; background: rgba(238,0,0,0.15); color: var(--primary); }
+    .lang-badge { font-size: 0.75rem; padding: 1px 8px; border-radius: 4px; font-weight: 500; background: rgba(59,130,246,0.12); color: var(--blue); }
+
+    .repo-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .repo-meta .tag { font-size: 0.8rem; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); color: var(--blue); padding: 3px 10px; border-radius: 100px; }
+    .repo-meta .tag.type { background: rgba(168,85,247,0.1); border-color: rgba(168,85,247,0.25); color: var(--purple); }
+
+    .note { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 10px 14px; font-size: 0.84rem; color: var(--orange); margin-bottom: 16px; }
+
+    /* ── Tables ── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    thead tr { background: rgba(255,255,255,0.03); }
+    th { text-align: left; padding: 10px 14px; font-weight: 600; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 9px 14px; border-bottom: 1px solid rgba(42,45,58,0.6); vertical-align: top; color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+    td.date { white-space: nowrap; color: var(--text-muted); font-size: 0.82rem; font-family: "SFMono-Regular", Consolas, monospace; width: 110px; }
+    td .pr-num { color: var(--text-muted); font-size: 0.8rem; }
+
+    /* ── Year groups ── */
+    .year-group { margin-top: 12px; }
+    .year-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 6px 0 4px; border-bottom: 1px solid var(--border); margin-bottom: 2px; }
+
+    /* ── Contrib list ── */
+    .contrib-list { list-style: none; margin-top: 12px; }
+    .contrib-list li { padding: 5px 0; font-size: 0.875rem; padding-left: 20px; position: relative; color: var(--text-muted); }
+    .contrib-list li::before { content: "▸"; position: absolute; left: 0; color: var(--primary); }
+    .contrib-list li strong { color: var(--blue); }
+
+    /* ── Overview table ── */
+    .overview-table td:first-child { font-family: "SFMono-Regular", Consolas, monospace; color: var(--blue); }
+    .overview-table td:last-child { font-weight: 700; text-align: right; color: var(--green); }
+    .overview-table tr.total-row td { background: rgba(34,197,94,0.06); font-weight: 700; font-size: 1rem; }
+    .overview-table tr.total-row td:last-child { color: var(--green); font-size: 1.1rem; }
+
+    /* ── Direction grid ── */
+    .direction-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 4px; }
+    .direction-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; background: rgba(255,255,255,0.02); }
+    .direction-card h4 { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .direction-card .repos { font-size: 0.8rem; color: var(--text-muted); }
+    .direction-card .repos code { background: rgba(59,130,246,0.12); color: var(--blue); padding: 1px 6px; border-radius: 4px; margin: 2px; display: inline-block; }
+
+    /* ── Badges ── */
+    .private-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 1px 7px; border-radius: 100px; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: var(--orange); margin-left: 5px; vertical-align: middle; white-space: nowrap; }
+
+    /* ── Links ── */
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { color: var(--cyan); text-decoration: underline; }
+    .section-header h2 a { color: var(--blue); font-weight: 700; }
+    .overview-table a { color: var(--blue); font-weight: 600; }
+
+    /* ── Footer ── */
+    footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .chart-row { grid-template-columns: 1fr; }
+      .highlight-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      header { padding: 32px 0 28px; }
+      .header-left h1 { font-size: 1.6rem; }
+      .container { padding: 0 12px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); margin: -20px 0 32px; }
+      .highlight-card { padding: 16px; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<input type="checkbox" id="lang-toggle">
+
+<header>
+  <div class="container">
+    <div class="header-content">
+      <div class="header-left">
+        <h1>Wen Wang</h1>
+        <div class="subtitle">
+          <strong><span class="lang-en">Senior Software  Quality Engineer</span><span class="lang-cn">高级自动化测试工程师</span></strong>
+          <span class="lang-en"> at </span><span class="lang-cn"> @ </span><strong>Red Hat</strong>
+          &nbsp;|&nbsp;
+          <span class="lang-en">Open Source Contributor</span><span class="lang-cn">开源社区贡献者</span>
+        </div>
+        <div class="meta">
+          <span>Email: <a href="mailto:wewang@redhat.com">wewang@redhat.com</a></span>
+          <span>GitHub: <a href="https://github.com/wewang58" target="_blank">wewang58</a></span>
+          <span><span class="lang-en">Generated:</span><span class="lang-cn">生成日期：</span> 2026-04-13</span>
+        </div>
+      </div>
+      <div>
+        <div class="lang-switch">
+          <label class="lbl-en" for="lang-toggle">EN</label>
+          <label class="lbl-cn" for="lang-toggle">CN</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container" style="padding-top: 54px;">
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <span class="num">430</span>
+      <div class="label"><span class="lang-en">Total Commits</span><span class="lang-cn">提交总数</span></div>
+    </div>
+    <div class="stat-card">
+      <span class="num">10</span>
+      <div class="label"><span class="lang-en">Repositories</span><span class="lang-cn">代码仓库</span></div>
+    </div>
+    <div class="stat-card">
+      <span class="num">8</span>
+      <div class="label"><span class="lang-en">Open Source Projects</span><span class="lang-cn">开源项目</span></div>
+    </div>
+    <div class="stat-card">
+      <span class="num">7</span>
+      <div class="label"><span class="lang-en">Years (2020–2026)</span><span class="lang-cn">贡献年限（2020–2026）</span></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 1: Contribution Overview
+  ════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-title">
+      <span class="lang-en">Contribution Overview</span>
+      <span class="lang-cn">贡献概览</span>
+    </div>
+
+    <div class="chart-row">
+      <!-- Bar chart: commits by repo -->
+      <div class="chart-box">
+        <h3><span class="lang-en">Commits by Repository (log scale)</span><span class="lang-cn">各仓库提交数（对数刻度）</span></h3>
+        <svg viewBox="0 0 480 220" preserveAspectRatio="xMidYMid meet">
+          <!-- openshift-tests-private: 243 → 270px -->
+          <text x="155" y="18" text-anchor="end" fill="#e4e4e7" font-size="10">openshift-tests-private</text>
+          <rect x="161" y="6" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="161" y="6" width="270" height="18" rx="3" fill="#ee0000" opacity="0.85"/>
+          <text x="169" y="19" fill="#fff" font-size="9" font-weight="600">243</text>
+
+          <!-- release: 111 → 231px -->
+          <text x="155" y="44" text-anchor="end" fill="#e4e4e7" font-size="10">release</text>
+          <rect x="161" y="32" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="161" y="32" width="231" height="18" rx="3" fill="#3b82f6" opacity="0.85"/>
+          <text x="169" y="45" fill="#fff" font-size="9" font-weight="600">111</text>
+
+          <!-- hypershift: 22 → 152px -->
+          <text x="155" y="70" text-anchor="end" fill="#e4e4e7" font-size="10">hypershift</text>
+          <rect x="161" y="58" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="161" y="58" width="152" height="18" rx="3" fill="#22c55e" opacity="0.85"/>
+          <text x="169" y="71" fill="#fff" font-size="9" font-weight="600">22</text>
+
+          <!-- release-tests: 17 → 139px -->
+          <text x="155" y="96" text-anchor="end" fill="#e4e4e7" font-size="10">release-tests</text>
+          <rect x="161" y="84" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="161" y="84" width="139" height="18" rx="3" fill="#a855f7" opacity="0.85"/>
+          <text x="169" y="97" fill="#fff" font-size="9" font-weight="600">17</text>
+
+          <!-- lws-operator: 14 → 130px -->
+          <text x="155" y="122" text-anchor="end" fill="#e4e4e7" font-size="10">lws-operator</text>
+          <rect x="161" y="110" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="161" y="110" width="130" height="18" rx="3" fill="#f59e0b" opacity="0.85"/>
+          <text x="169" y="123" fill="#fff" font-size="9" font-weight="600">14</text>
+
+          <!-- jobset-operator: 7 → 96px -->
+          <text x="155" y="148" text-anchor="end" fill="#e4e4e7" font-size="10">jobset-operator</text>
+          <rect x="161" y="136" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="161" y="136" width="96" height="18" rx="3" fill="#06b6d4" opacity="0.85"/>
+          <text x="169" y="149" fill="#fff" font-size="9" font-weight="600">7</text>
+
+          <!-- flexy-templates: 7 → 96px -->
+          <text x="155" y="174" text-anchor="end" fill="#e4e4e7" font-size="10">flexy-templates</text>
+          <rect x="161" y="162" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="161" y="162" width="96" height="18" rx="3" fill="#ec4899" opacity="0.85"/>
+          <text x="169" y="175" fill="#fff" font-size="9" font-weight="600">7</text>
+
+          <!-- others: 9 → 77px -->
+          <text x="155" y="200" text-anchor="end" fill="#e4e4e7" font-size="10">lws / geminicli / llama</text>
+          <rect x="161" y="188" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="161" y="188" width="54" height="18" rx="3" fill="#8b5cf6" opacity="0.85"/>
+          <text x="169" y="201" fill="#fff" font-size="9" font-weight="600">3×3</text>
+          <text x="431" y="218" text-anchor="end" fill="#6b7280" font-size="8" font-style="italic">log scale</text>
+        </svg>
+      </div>
+
+      <!-- Donut chart: repo types -->
+      <div class="chart-box">
+        <h3><span class="lang-en">Repository Types</span><span class="lang-cn">仓库类型分布</span></h3>
+        <svg viewBox="0 0 340 190" preserveAspectRatio="xMidYMid meet">
+          <!-- center (90,95) r=70 -->
+          <!-- Open Source 8/10 = 288° : 0→288° -->
+          <!-- start (90,25), end at 288°: x=90+70sin(288)=90-66.6=23.4, y=95-70cos(288)=95-21.6=73.4 -->
+          <path d="M90,25 A70,70 0 1 1 23.4,73.4" fill="none" stroke="#22c55e" stroke-width="22" stroke-linecap="round"/>
+          <!-- Internal 1/10 = 36°: 288→324° -->
+          <!-- end at 324°: x=90+70sin(324)=90-41.1=48.9, y=95-70cos(324)=95-56.6=38.4 -->
+          <path d="M23.4,73.4 A70,70 0 0 1 48.9,38.4" fill="none" stroke="#a855f7" stroke-width="22" stroke-linecap="round"/>
+          <!-- Personal 1/10 = 36°: 324→360° -->
+          <path d="M48.9,38.4 A70,70 0 0 1 90,25" fill="none" stroke="#06b6d4" stroke-width="22" stroke-linecap="round"/>
+          <!-- Center text -->
+          <text x="90" y="91" text-anchor="middle" fill="#e4e4e7" font-size="26" font-weight="700">10</text>
+          <text x="90" y="107" text-anchor="middle" fill="#9ca3af" font-size="11">repos</text>
+          <!-- Legend -->
+          <circle cx="185" cy="60" r="5" fill="#22c55e"/>
+          <text x="196" y="64" fill="#e4e4e7" font-size="11"><tspan class="lang-en">Open Source (8)</tspan><tspan class="lang-cn">开源（8）</tspan></text>
+          <circle cx="185" cy="84" r="5" fill="#a855f7"/>
+          <text x="196" y="88" fill="#e4e4e7" font-size="11"><tspan class="lang-en">Internal (1)</tspan><tspan class="lang-cn">内部（1）</tspan></text>
+          <circle cx="185" cy="108" r="5" fill="#06b6d4"/>
+          <text x="196" y="112" fill="#e4e4e7" font-size="11"><tspan class="lang-en">Personal (2)</tspan><tspan class="lang-cn">个人（2）</tspan></text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <!-- Tech stack -->
+      <div class="chart-box">
+        <h3><span class="lang-en">Technology Stack</span><span class="lang-cn">技术栈</span></h3>
+        <svg viewBox="0 0 480 227" preserveAspectRatio="xMidYMid meet">
+          <text x="178" y="18" text-anchor="end" fill="#e4e4e7" font-size="11">Go</text>
+          <rect x="184" y="6" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="184" y="6" width="243" height="18" rx="3" fill="#06b6d4" opacity="0.9"/>
+          <text x="192" y="19" fill="#fff" font-size="9" font-weight="600">90%</text>
+
+          <text x="178" y="44" text-anchor="end" fill="#e4e4e7" font-size="11">Kubernetes / OpenShift</text>
+          <rect x="184" y="32" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="184" y="32" width="270" height="18" rx="3" fill="#ee0000" opacity="0.85"/>
+          <text x="192" y="45" fill="#fff" font-size="9" font-weight="600">100%</text>
+
+          <text x="178" y="70" text-anchor="end" fill="#e4e4e7" font-size="11">Linux / Shell / Bash</text>
+          <rect x="184" y="58" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="184" y="58" width="230" height="18" rx="3" fill="#14b8a6" opacity="0.9"/>
+          <text x="192" y="71" fill="#fff" font-size="9" font-weight="600">85%</text>
+
+          <text x="178" y="96" text-anchor="end" fill="#e4e4e7" font-size="11">CI/CD (Prow / Step Registry)</text>
+          <rect x="184" y="84" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="184" y="84" width="216" height="18" rx="3" fill="#f59e0b" opacity="0.9"/>
+          <text x="192" y="97" fill="#fff" font-size="9" font-weight="600">80%</text>
+
+          <text x="178" y="122" text-anchor="end" fill="#e4e4e7" font-size="11">YAML</text>
+          <rect x="184" y="110" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="184" y="110" width="189" height="18" rx="3" fill="#22c55e" opacity="0.9"/>
+          <text x="192" y="123" fill="#fff" font-size="9" font-weight="600">70%</text>
+
+          <text x="178" y="148" text-anchor="end" fill="#e4e4e7" font-size="11">Python</text>
+          <rect x="184" y="136" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="184" y="136" width="108" height="18" rx="3" fill="#3b82f6" opacity="0.9"/>
+          <text x="192" y="149" fill="#fff" font-size="9" font-weight="600">40%</text>
+
+          <text x="178" y="174" text-anchor="end" fill="#e4e4e7" font-size="11">AI / MCP / Claude Code</text>
+          <rect x="184" y="162" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="184" y="162" width="162" height="18" rx="3" fill="#a855f7" opacity="0.9"/>
+          <text x="192" y="175" fill="#fff" font-size="9" font-weight="600">60%</text>
+
+          <text x="178" y="200" text-anchor="end" fill="#e4e4e7" font-size="11">LLM / LWS / AI Infra</text>
+          <rect x="184" y="188" width="270" height="18" rx="3" fill="#1e2030"/>
+          <rect x="184" y="188" width="135" height="18" rx="3" fill="#ec4899" opacity="0.9"/>
+          <text x="192" y="201" fill="#fff" font-size="9" font-weight="600">50%</text>
+        </svg>
+      </div>
+
+      <!-- Yearly growth bar chart -->
+      <div class="chart-box">
+        <h3><span class="lang-en">Yearly Commit Activity</span><span class="lang-cn">年度提交活跃度</span></h3>
+        <svg viewBox="0 0 480 190" preserveAspectRatio="xMidYMid meet">
+          <!-- baseline y=168, scale: max~120 → 140px height, bar width=44 -->
+          <!-- 2020:~1 → 1px -->
+          <rect x="28" y="167" width="44" height="1" rx="2" fill="#ee0000" opacity="0.8"/>
+          <text x="50" y="183" text-anchor="middle" fill="#9ca3af" font-size="10">2020</text>
+          <text x="50" y="160" text-anchor="middle" fill="#9ca3af" font-size="9">1</text>
+          <!-- 2021:~22 → 26px -->
+          <rect x="82" y="142" width="44" height="26" rx="2" fill="#ee0000" opacity="0.8"/>
+          <text x="104" y="183" text-anchor="middle" fill="#9ca3af" font-size="10">2021</text>
+          <text x="104" y="135" text-anchor="middle" fill="#9ca3af" font-size="9">22</text>
+          <!-- 2022:~48 → 56px -->
+          <rect x="136" y="112" width="44" height="56" rx="2" fill="#3b82f6" opacity="0.8"/>
+          <text x="158" y="183" text-anchor="middle" fill="#9ca3af" font-size="10">2022</text>
+          <text x="158" y="105" text-anchor="middle" fill="#9ca3af" font-size="9">48</text>
+          <!-- 2023:~75 → 88px -->
+          <rect x="190" y="80" width="44" height="88" rx="2" fill="#22c55e" opacity="0.8"/>
+          <text x="212" y="183" text-anchor="middle" fill="#9ca3af" font-size="10">2023</text>
+          <text x="212" y="73" text-anchor="middle" fill="#9ca3af" font-size="9">75</text>
+          <!-- 2024:~90 → 105px -->
+          <rect x="244" y="63" width="44" height="105" rx="2" fill="#f59e0b" opacity="0.8"/>
+          <text x="266" y="183" text-anchor="middle" fill="#9ca3af" font-size="10">2024</text>
+          <text x="266" y="56" text-anchor="middle" fill="#9ca3af" font-size="9">90</text>
+          <!-- 2025:~120 → 140px -->
+          <rect x="298" y="28" width="44" height="140" rx="2" fill="#a855f7" opacity="0.8"/>
+          <text x="320" y="183" text-anchor="middle" fill="#9ca3af" font-size="10">2025</text>
+          <text x="320" y="21" text-anchor="middle" fill="#9ca3af" font-size="9">120</text>
+          <!-- 2026:~34 → 40px (partial) -->
+          <rect x="352" y="128" width="44" height="40" rx="2" fill="#06b6d4" opacity="0.8"/>
+          <text x="374" y="183" text-anchor="middle" fill="#9ca3af" font-size="10">2026</text>
+          <text x="374" y="121" text-anchor="middle" fill="#9ca3af" font-size="9">34*</text>
+          <!-- baseline -->
+          <line x1="20" y1="168" x2="460" y2="168" stroke="#2a2d3a" stroke-width="1"/>
+          <text x="460" y="183" text-anchor="end" fill="#6b7280" font-size="8" font-style="italic">*partial year</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Overview table -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2><span class="lang-en">Repository Overview</span><span class="lang-cn">仓库总览</span></h2>
+      </div>
+      <div class="section-body">
+        <div class="note"><span class="lang-en">Note: Commit counts include deduplicated unique commits across all local branches, including unmerged WIP/debug commits.</span><span class="lang-cn">注：提交数为所有本地分支去重后的唯一提交数，包含未合并的 WIP/调试提交。</span></div>
+        <table class="overview-table">
+          <thead>
+            <tr>
+              <th><span class="lang-en">Repository</span><span class="lang-cn">仓库</span></th>
+              <th><span class="lang-en">Upstream</span><span class="lang-cn">上游</span></th>
+              <th><span class="lang-en">Focus Area</span><span class="lang-cn">专注领域</span></th>
+              <th><span class="lang-en">Language</span><span class="lang-cn">语言</span></th>
+              <th style="text-align:right"><span class="lang-en">Commits</span><span class="lang-cn">提交数</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>openshift-tests-private</td><td><a href="https://github.com/openshift/openshift-tests-private" target="_blank">openshift/openshift-tests-private</a><span class="private-badge">🔒 Private</span></td><td><span class="lang-en">OpenShift E2E Testing</span><span class="lang-cn">OpenShift E2E 测试</span></td><td>Go</td><td>243</td></tr>
+            <tr><td>release</td><td><a href="https://github.com/openshift/release" target="_blank">openshift/release</a></td><td><span class="lang-en">CI/CD Configuration</span><span class="lang-cn">CI/CD 配置</span></td><td>YAML / Shell</td><td>111</td></tr>
+            <tr><td>hypershift</td><td><a href="https://github.com/openshift/hypershift" target="_blank">openshift/hypershift</a></td><td><span class="lang-en">HyperShift / ARO HCP</span><span class="lang-cn">托管控制面</span></td><td>Go</td><td>22</td></tr>
+            <tr><td>release-tests</td><td><a href="https://github.com/openshift/release-tests" target="_blank">openshift/release-tests</a></td><td><span class="lang-en">QE Release Automation</span><span class="lang-cn">QE 发布自动化</span></td><td>Python</td><td>17</td></tr>
+            <tr><td>lws-operator</td><td><a href="https://github.com/openshift/lws-operator" target="_blank">openshift/lws-operator</a></td><td><span class="lang-en">OpenShift LWS Operator</span><span class="lang-cn">LWS Operator</span></td><td>Go</td><td>14</td></tr>
+            <tr><td>flexy-templates</td><td>aosqe/flexy-templates (GitLab)</td><td><span class="lang-en">Cluster Deployment Templates</span><span class="lang-cn">集群部署模板</span></td><td>YAML / Shell</td><td>7</td></tr>
+            <tr><td>jobset-operator</td><td><a href="https://github.com/openshift/jobset-operator" target="_blank">openshift/jobset-operator</a></td><td><span class="lang-en">OpenShift JobSet Operator</span><span class="lang-cn">JobSet Operator</span></td><td>Go</td><td>7</td></tr>
+            <tr><td>lws</td><td><a href="https://github.com/kubernetes-sigs/lws" target="_blank">kubernetes-sigs/lws</a></td><td><span class="lang-en">Kubernetes LWS Upstream</span><span class="lang-cn">LWS 上游社区</span></td><td>Go</td><td>3</td></tr>
+            <tr><td>geminicli</td><td><a href="https://github.com/wewang58/geminicli" target="_blank">wewang58/geminicli</a></td><td><span class="lang-en">Gemini CLI Tool</span><span class="lang-cn">Gemini CLI 工具</span></td><td>Go / Shell</td><td>3</td></tr>
+            <tr><td>llama-cpp-example</td><td><a href="https://github.com/wewang58/llama-cpp-example" target="_blank">wewang58/llama-cpp-example</a></td><td><span class="lang-en">LLM / LWS Example</span><span class="lang-cn">LLM 推理示例</span></td><td>YAML / Shell</td><td>3</td></tr>
+            <tr class="total-row"><td colspan="4"><span class="lang-en">Total</span><span class="lang-cn">合计</span></td><td>430</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 2: Impact Highlights
+  ════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-title">
+      <span class="lang-en">Impact Highlights</span>
+      <span class="lang-cn">核心贡献亮点</span>
+    </div>
+    <div class="highlight-grid">
+
+      <div class="highlight-card">
+        <div class="highlight-icon" style="background:rgba(238,0,0,0.12);">🧪</div>
+        <div>
+          <h4><span class="lang-en">E2E Test Suite – 243 Commits</span><span class="lang-cn">E2E 测试套件 – 243 次提交</span></h4>
+          <p>
+            <span class="lang-en">6-year sustained contribution to <code style="color:var(--blue)">openshift-tests-private</code>, covering image registry, authentication, networking, multi-version backports (4.8–4.19), arm64 support, and HCP cluster adaptation.</span>
+            <span class="lang-cn">在 <code style="color:var(--blue)">openshift-tests-private</code> 持续贡献 6 年，涵盖镜像仓库、认证、网络、多版本回移（4.8–4.19）、arm64 支持及 HCP 集群适配等场景。</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon" style="background:rgba(59,130,246,0.12);">⚙️</div>
+        <div>
+          <h4><span class="lang-en">CI/CD Infrastructure – 111 Commits</span><span class="lang-cn">CI/CD 基础设施 – 111 次提交</span></h4>
+          <p>
+            <span class="lang-en">Configured Prow jobs and step registry in <code style="color:var(--blue)">openshift/release</code> for Azure HCP, disconnected clusters, Nutanix storage, and OVN networking CI pipelines.</span>
+            <span class="lang-cn">在 <code style="color:var(--blue)">openshift/release</code> 配置 Prow 作业和步骤注册，涵盖 Azure HCP、离线集群、Nutanix 存储及 OVN 网络 CI 流水线。</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon" style="background:rgba(34,197,94,0.12);">🤖</div>
+        <div>
+          <h4><span class="lang-en">HyperShift / ARO HCP – Cilium CNI</span><span class="lang-cn">HyperShift / ARO HCP – Cilium CNI</span></h4>
+          <p>
+            <span class="lang-en">Implemented CNTRLPLANE-1137: added Cilium as an external CNI provider for HyperShift, wrote ARO HCP Azure e2e utilities, and fixed OVN/NodePool-related test failures.</span>
+            <span class="lang-cn">实现 CNTRLPLANE-1137：为 HyperShift 集成 Cilium 外部 CNI，编写 ARO HCP Azure e2e 工具函数，修复 OVN/NodePool 相关测试失败问题。</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon" style="background:rgba(168,85,247,0.12);">🚀</div>
+        <div>
+          <h4><span class="lang-en">AI/ML Workload Testing (LWS / JobSet)</span><span class="lang-cn">AI/ML 工作负载测试（LWS / JobSet）</span></h4>
+          <p>
+            <span class="lang-en">Led test automation for LWS Operator and JobSet Operator, contributed to upstream kubernetes-sigs/lws, and built llama.cpp LWS deployment examples for AI inference on Kubernetes.</span>
+            <span class="lang-cn">主导 LWS Operator 和 JobSet Operator 测试自动化，贡献上游 kubernetes-sigs/lws，并构建基于 LWS 的 llama.cpp AI 推理部署示例。</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Linux & Shell Scripting -->
+      <div class="highlight-card">
+        <div class="highlight-icon" style="background:rgba(20,184,166,0.12);">🐧</div>
+        <div>
+          <h4><span class="lang-en">Linux & Shell Scripting</span><span class="lang-cn">Linux 与 Shell 脚本</span></h4>
+          <p>
+            <span class="lang-en">Authored numerous shell scripts across multiple repos: <strong style="color:var(--text)">Prow step-registry entrypoint scripts</strong> for Azure / Nutanix / Disconnected CI pipelines (<code style="color:var(--blue)">openshift/release</code>), cluster deployment &amp; image-registry setup scripts (<code style="color:var(--blue)">flexy-templates</code>), HyperShift CLI build automation scripts (<code style="color:var(--blue)">geminicli</code>), and ad-hoc test-environment management scripts — covering Linux cluster operations, process control, and multi-platform environment automation.</span>
+            <span class="lang-cn">在多个仓库编写了大量 Shell 脚本：为 Azure / Nutanix / 离线 CI 流水线编写 <strong style="color:var(--text)">Prow step-registry 入口脚本</strong>（<code style="color:var(--blue)">openshift/release</code>）、集群部署与镜像仓库配置脚本（<code style="color:var(--blue)">flexy-templates</code>）、HyperShift CLI 构建自动化脚本（<code style="color:var(--blue)">geminicli</code>），以及各类测试环境管理脚本——涵盖 Linux 集群运维、进程控制与多平台环境自动化。</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Claude Code & MCP proficiency -->
+      <div class="highlight-card">
+        <div class="highlight-icon" style="background:rgba(59,130,246,0.12);">💡</div>
+        <div>
+          <h4><span class="lang-en">Claude Code Power User — MCP &amp; Skills</span><span class="lang-cn">Claude Code 深度用户 — MCP 与 Skills</span></h4>
+          <p>
+            <span class="lang-en">Daily Claude Code practitioner with deep familiarity in the full extension ecosystem: writing custom <strong style="color:var(--text)">MCP (Model Context Protocol) servers</strong> to expose APIs as Claude tools, authoring <strong style="color:var(--text)">Claude Code skills</strong> (.md prompt files) for reusable multi-step workflows, configuring <strong style="color:var(--text)">hooks</strong> for automated pre/post-tool actions, and wiring everything together to automate real engineering tasks — from CI trigger to cluster provisioning.</span>
+            <span class="lang-cn">Claude Code 日常深度用户，全面熟悉其扩展生态：编写自定义 <strong style="color:var(--text)">MCP 服务器</strong>将 API 暴露为 Claude 工具、编写 <strong style="color:var(--text)">Claude Code Skills</strong>（.md 提示文件）实现可复用的多步骤工作流、配置 <strong style="color:var(--text)">Hooks</strong> 实现工具调用前后的自动化动作——并将这些能力串联起来自动完成真实工程任务（从 CI 触发到集群供给）。</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Jira -->
+      <div class="highlight-card span2" style="border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.03);">
+        <div class="highlight-icon" style="background:rgba(59,130,246,0.12); flex-shrink:0;">📋</div>
+        <div>
+          <h4 style="color:var(--blue);"><span class="lang-en">Jira — Issue Tracking &amp; Workflow Automation</span><span class="lang-cn">Jira — 问题跟踪与工作流自动化</span></h4>
+          <p style="margin-bottom:10px;">
+            <span class="lang-en">Extensive Jira usage across daily engineering work: tracking <strong style="color:var(--text)">OCPQE bugs</strong> across multiple OpenShift releases, sprint planning, and linking Jira tickets to GitHub PRs. Integrated Jira programmatically into the <strong style="color:var(--text)">OAR release automation tool</strong> (<code style="color:var(--blue)">release-tests</code>) — automating task status sync, prodsec / doc approval request workflows, and errata linkage. Also proficient in using <strong style="color:var(--text)">Claude Code Jira skills</strong> to create, update, categorize, generate status rollups, and analyze tickets via natural language.</span>
+            <span class="lang-cn">在日常工程工作中大量使用 Jira：跨多个 OpenShift 版本追踪 <strong style="color:var(--text)">OCPQE Bug</strong>、迭代规划、将 Jira 工单与 GitHub PR 关联。在 <strong style="color:var(--text)">OAR 发布自动化工具</strong>（<code style="color:var(--blue)">release-tests</code>）中以编程方式集成 Jira，实现任务状态自动同步、prodsec/文档审批请求工作流及 Errata 关联。同时熟练使用 <strong style="color:var(--text)">Claude Code Jira Skills</strong>，通过自然语言创建、更新、分类工单、生成状态汇总并进行工单分析。</span>
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;">
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(59,130,246,0.12); color:var(--blue); font-weight:600;">Jira API</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(59,130,246,0.12); color:var(--blue); font-weight:600;">OCPQE Bug Tracking</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(34,197,94,0.12); color:var(--green); font-weight:600;">OAR Jira Automation</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(168,85,247,0.12); color:var(--purple); font-weight:600;">Claude Code Jira Skills</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(245,158,11,0.12); color:var(--orange); font-weight:600;">Status Rollup &amp; Reporting</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full-width card: MCP Server Achievement -->
+      <div class="highlight-card span2" style="border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.04);">
+        <div class="highlight-icon" style="background:rgba(245,158,11,0.15); flex-shrink:0;">🔧</div>
+        <div style="flex:1;">
+          <h4 style="color:var(--orange);">
+            <span class="lang-en">AI-Driven Infrastructure Automation — MCP Server + Claude Code Skills [Demo]</span>
+            <span class="lang-cn">AI 驱动的基础设施自动化 — MCP Server + Claude Code Skills【附演示视频】</span>
+          </h4>
+          <p style="margin-bottom:10px;">
+            <span class="lang-en">Built a custom <strong style="color:var(--text)">MCP (Model Context Protocol) server</strong> exposing Jenkins API as Claude tools, and authored <strong style="color:var(--text)">Claude Code skills</strong> to orchestrate a fully automated end-to-end infrastructure provisioning workflow: triggering a Jenkins job to install an <strong style="color:var(--text)">Azure managed cluster</strong>, then deploying a <strong style="color:var(--text)">HyperShift hosted cluster</strong> on top — all driven by natural language via Claude Code. Full workflow captured via screen recording.</span>
+            <span class="lang-cn">构建自定义 <strong style="color:var(--text)">MCP 服务器</strong>将 Jenkins API 封装为 Claude 工具，编写 <strong style="color:var(--text)">Claude Code Skills</strong> 编排完整端到端基础设施自动化流程：通过 Jenkins Job 安装 <strong style="color:var(--text)">Azure 托管集群</strong>，再在其上部署 <strong style="color:var(--text)">HyperShift 托管集群</strong>——全程由 Claude Code 自然语言驱动，并录制了完整演示视频。</span>
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;">
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(245,158,11,0.12); color:var(--orange); font-weight:600;">MCP Server</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(59,130,246,0.12); color:var(--blue); font-weight:600;">Claude Code Skills</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(20,184,166,0.12); color:var(--teal,#14b8a6); font-weight:600;">Shell Scripting</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(34,197,94,0.12); color:var(--green); font-weight:600;">Jenkins API</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(168,85,247,0.12); color:var(--purple); font-weight:600;">Azure Managed Cluster</span>
+            <span style="font-size:0.78rem; padding:2px 10px; border-radius:100px; background:rgba(238,0,0,0.12); color:var(--primary); font-weight:600;">HyperShift Hosted Cluster</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION 3: Repository Contributions
+  ════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-title">
+      <span class="lang-en">Repository Contributions</span>
+      <span class="lang-cn">仓库贡献详情</span>
+    </div>
+
+    <!-- 1. lws -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>1. <a href="https://github.com/kubernetes-sigs/lws" target="_blank">lws</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem">kubernetes-sigs/lws upstream</span></h2>
+        <span class="badge">3 commits</span>
+        <span class="lang-badge">Go</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/lws → kubernetes-sigs/lws</span>
+          <span class="tag type"><span class="lang-en">Kubernetes LWS Upstream Community</span><span class="lang-cn">Kubernetes LWS 上游社区</span></span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2025-08-27</td><td class="commit">Reverse leader and worker name</td></tr>
+            <tr><td class="date">2025-08-15</td><td class="commit">LLM endpoint port update <span class="pr-num">(#612)</span></td></tr>
+            <tr><td class="date">2025-08-11</td><td class="commit">LLM endpoint port update <span class="pr-num">(WIP)</span></td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><span class="lang-en">Contributed to the kubernetes-sigs upstream LWS community, fixing Leader/Worker naming conventions</span><span class="lang-cn">贡献 kubernetes-sigs 上游 LWS 社区，修复 Leader/Worker 命名规范问题</span></li>
+          <li><span class="lang-en">Updated port configuration for LLM inference endpoints</span><span class="lang-cn">更新 LLM 推理端点的端口配置</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. lws-operator -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>2. <a href="https://github.com/openshift/lws-operator" target="_blank">lws-operator</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem">OpenShift LWS Operator</span></h2>
+        <span class="badge">14 commits</span>
+        <span class="lang-badge">Go</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/lws-operator → openshift/lws-operator</span>
+          <span class="tag type"><span class="lang-en">AI/ML Inference Workload Operator</span><span class="lang-cn">AI/ML 推理工作负载 Operator</span></span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2025-09-15</td><td class="commit">Add management test</td></tr>
+            <tr><td class="date">2025-08-11</td><td class="commit">Rebase (WIP)</td></tr>
+            <tr><td class="date">2025-07-24</td><td class="commit">Add cert-manager installation in readme</td></tr>
+            <tr><td class="date">2025-07-17</td><td class="commit">Rebase</td></tr>
+            <tr><td class="date">2025-06-16</td><td class="commit">Update typo of operand image</td></tr>
+            <tr><td class="date">2025-06-09</td><td class="commit">Update README for e2e test</td></tr>
+            <tr><td class="date">2025-05-28</td><td class="commit">Add test failure recovery test</td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><strong><span class="lang-en">ManagementState Testing</span><span class="lang-cn">管理状态测试</span></strong>: <span class="lang-en">Added management state test cases</span><span class="lang-cn">新增管理状态测试用例</span></li>
+          <li><strong><span class="lang-en">Documentation</span><span class="lang-cn">文档</span></strong>: <span class="lang-en">Added cert-manager installation guide and E2E test documentation</span><span class="lang-cn">新增 cert-manager 安装指南和 E2E 测试文档</span></li>
+          <li><strong><span class="lang-en">Failure Recovery</span><span class="lang-cn">故障恢复</span></strong>: <span class="lang-en">Added test failure recovery scenarios</span><span class="lang-cn">新增测试故障恢复场景</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. jobset-operator -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>3. <a href="https://github.com/openshift/jobset-operator" target="_blank">jobset-operator</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem">OpenShift JobSet Operator</span></h2>
+        <span class="badge">7 commits</span>
+        <span class="lang-badge">Go</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/jobset-operator → openshift/jobset-operator</span>
+          <span class="tag type"><span class="lang-en">Kubernetes JobSet Operator</span><span class="lang-cn">Kubernetes JobSet Operator</span></span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2025-12-24</td><td class="commit">Fix invalid JSON in CSV alm-examples</td></tr>
+            <tr><td class="date">2025-09-19</td><td class="commit">Add managementstate check</td></tr>
+            <tr><td class="date">2025-06-25</td><td class="commit">Update E2E part for README</td></tr>
+            <tr><td class="date">2025-06-15</td><td class="commit">Add test failure recovery test</td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><strong><span class="lang-en">JSON Fix</span><span class="lang-cn">JSON 修复</span></strong>: <span class="lang-en">Fixed invalid JSON format in CSV alm-examples</span><span class="lang-cn">修复 CSV alm-examples 中的无效 JSON 格式</span></li>
+          <li><strong><span class="lang-en">ManagementState Check</span><span class="lang-cn">管理状态检查</span></strong>: <span class="lang-en">Added controller management state validation logic</span><span class="lang-cn">新增控制器管理状态校验逻辑</span></li>
+          <li><strong><span class="lang-en">Testing &amp; Docs</span><span class="lang-cn">测试与文档</span></strong>: <span class="lang-en">Improved E2E documentation and added failure recovery tests</span><span class="lang-cn">完善 E2E 文档并新增故障恢复测试</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 4. openshift-tests-private -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>4. <a href="https://github.com/openshift/openshift-tests-private" target="_blank">openshift-tests-private</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem">OpenShift E2E Test Suite</span></h2>
+        <span class="badge">243 commits</span>
+        <span class="lang-badge">Go</span>
+        <span class="private-badge">🔒 Private</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/openshift-tests-private → openshift/openshift-tests-private</span>
+          <span class="private-badge">🔒 Private Repository</span>
+          <span class="tag type">Ginkgo E2E Test Suite</span>
+        </div>
+
+        <div class="year-group">
+          <div class="year-label">2025</div>
+          <table>
+            <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+            <tbody>
+              <tr><td class="date">2025-09-09</td><td class="commit">Manually cherry-pick lws automation to 4.19 <span class="pr-num">(#27018)</span></td></tr>
+              <tr><td class="date">2025-09-09</td><td class="commit">Manually cherry-pick to 4.18 for lws <span class="pr-num">(#27021)</span></td></tr>
+              <tr><td class="date">2025-09-04</td><td class="commit">Add lws example <span class="pr-num">(#26960)</span></td></tr>
+              <tr><td class="date">2025-09-01</td><td class="commit">[release-4.18] Cherry-pick pr26863 to 4.18 <span class="pr-num">(#26955)</span></td></tr>
+              <tr><td class="date">2025-08-27</td><td class="commit">Install lws operator with catalogsource <span class="pr-num">(#26866)</span></td></tr>
+              <tr><td class="date">2025-08-25</td><td class="commit">Initial capitical for cert manager funtions <span class="pr-num">(#26863)</span></td></tr>
+              <tr><td class="date">2025-07-04</td><td class="commit">Auto ocp-76098 <span class="pr-num">(#25718)</span></td></tr>
+              <tr><td class="date">2025-06-24</td><td class="commit">Auto ocp-76094 <span class="pr-num">(#25711)</span></td></tr>
+              <tr><td class="date">2025-02-12</td><td class="commit">Skip Ocp-23583 in hcp cluster <span class="pr-num">(#23139)</span></td></tr>
+              <tr><td class="date">2025-01-13</td><td class="commit">Auto ocp-76095 <span class="pr-num">(#22149)</span></td></tr>
+              <tr><td class="date">2025-01-06</td><td class="commit">Fix ocp-24262 <span class="pr-num">(#22289)</span></td></tr>
+              <tr><td class="date">2025-01-02</td><td class="commit">Fix ocp-43731 <span class="pr-num">(#22088)</span></td></tr>
+              <tr><td class="date">2025-01-02</td><td class="commit">Fix ocp-23651 <span class="pr-num">(#22090)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="year-group">
+          <div class="year-label">2024</div>
+          <table>
+            <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+            <tbody>
+              <tr><td class="date">2024-11-26</td><td class="commit">Fix ocp-26732 <span class="pr-num">(#21339)</span></td></tr>
+              <tr><td class="date">2024-11-25</td><td class="commit">Automate OCP-76854, OCP-77160 <span class="pr-num">(#21042)</span></td></tr>
+              <tr><td class="date">2024-11-12</td><td class="commit">Fix build options <span class="pr-num">(#21041)</span></td></tr>
+              <tr><td class="date">2024-11-07</td><td class="commit">Automated <span class="pr-num">(#20796)</span></td></tr>
+              <tr><td class="date">2024-11-04</td><td class="commit">Enhance 16196 and 16495 <span class="pr-num">(#20798)</span></td></tr>
+              <tr><td class="date">2024-10-22</td><td class="commit">Auto ocp-76867 <span class="pr-num">(#20465)</span></td></tr>
+              <tr><td class="date">2024-08-27</td><td class="commit">Skip case test if dns or ingress is down <span class="pr-num">(#19055)</span></td></tr>
+              <tr><td class="date">2024-08-13</td><td class="commit">Fix ocp-56366 <span class="pr-num">(#18748)</span></td></tr>
+              <tr><td class="date">2024-08-13</td><td class="commit">Debug ocp-26401 <span class="pr-num">(#18709)</span></td></tr>
+              <tr><td class="date">2024-07-31</td><td class="commit">Fix ocp-30266 <span class="pr-num">(#18481)</span></td></tr>
+              <tr><td class="date">2024-07-31</td><td class="commit">Fix ocp-10788 <span class="pr-num">(#18494)</span></td></tr>
+              <tr><td class="date">2024-07-30</td><td class="commit">Fix ocp-72014 <span class="pr-num">(#18436)</span></td></tr>
+              <tr><td class="date">2024-07-24</td><td class="commit">Fix ocp-39028 <span class="pr-num">(#18324)</span></td></tr>
+              <tr><td class="date">2024-07-16</td><td class="commit">Install htpasswd <span class="pr-num">(#18050)</span></td></tr>
+              <tr><td class="date">2024-07-15</td><td class="commit">Enhance ocp-72015 <span class="pr-num">(#18007)</span></td></tr>
+              <tr><td class="date">2024-07-12</td><td class="commit">Enhance ocp-50925 <span class="pr-num">(#17908)</span></td></tr>
+              <tr><td class="date">2024-07-08</td><td class="commit">Fix OCP-39028 <span class="pr-num">(#17840)</span></td></tr>
+              <tr><td class="date">2024-07-08</td><td class="commit">Fix ocp-67388 <span class="pr-num">(#17834)</span></td></tr>
+              <tr><td class="date">2024-05-15</td><td class="commit">Fix 23583 <span class="pr-num">(#16557)</span></td></tr>
+              <tr><td class="date">2024-04-03</td><td class="commit">Auto OCP-66667 <span class="pr-num">(#15738)</span></td></tr>
+              <tr><td class="date">2024-04-02</td><td class="commit">Add LEVEL0 cases <span class="pr-num">(#15739)</span></td></tr>
+              <tr><td class="date">2024-04-02</td><td class="commit">Fix 56366 <span class="pr-num">(#15726)</span></td></tr>
+              <tr><td class="date">2024-03-20</td><td class="commit">Resolve conflict <span class="pr-num">(#15399)</span></td></tr>
+              <tr><td class="date">2024-03-14</td><td class="commit">Manually cherry-pick ocp-72015 and ocp-66533 <span class="pr-num">(#15325)</span></td></tr>
+              <tr><td class="date">2024-03-13</td><td class="commit">Auto OCP-66533 <span class="pr-num">(#15305)</span></td></tr>
+              <tr><td class="date">2024-03-07</td><td class="commit">Auto ocp-72015 <span class="pr-num">(#15182)</span></td></tr>
+              <tr><td class="date">2024-03-05</td><td class="commit">Add 30266 and 30419 to version 4.1x <span class="pr-num">(#15103)</span></td></tr>
+              <tr><td class="date">2024-02-20</td><td class="commit">Auto upgrade case: ocp-71537 <span class="pr-num">(#14743)</span></td></tr>
+              <tr><td class="date">2024-01-29</td><td class="commit">Fix 44107 <span class="pr-num">(#14487)</span></td></tr>
+              <tr><td class="date">2024-01-23</td><td class="commit">[OCPQE-19076] Fix ocp-24262 <span class="pr-num">(#14347)</span></td></tr>
+              <tr><td class="date">2024-01-22</td><td class="commit">Fix OCP-56366 <span class="pr-num">(#14313)</span></td></tr>
+              <tr><td class="date">2024-01-12</td><td class="commit">Auto 68181 <span class="pr-num">(#14071)</span></td></tr>
+              <tr><td class="date">2024-01-12</td><td class="commit">Fix 58762 for web test <span class="pr-num">(#14068)</span></td></tr>
+              <tr><td class="date">2024-01-08</td><td class="commit">Fix ocp-22596 <span class="pr-num">(#13950)</span></td></tr>
+              <tr><td class="date">2024-01-08</td><td class="commit">Auto ocp-69008 <span class="pr-num">(#13946)</span></td></tr>
+              <tr><td class="date">2024-01-08</td><td class="commit">Fix ruby version issue <span class="pr-num">(#13935)</span></td></tr>
+              <tr><td class="date">2024-01-04</td><td class="commit">Auto ocp-68733 <span class="pr-num">(#13886)</span></td></tr>
+              <tr><td class="date">2024-01-02</td><td class="commit">Auto ocp-6867 <span class="pr-num">(#13762)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="year-group">
+          <div class="year-label">2023</div>
+          <table>
+            <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+            <tbody>
+              <tr><td class="date">2023-11-13</td><td class="commit">Auto ocp-68732 <span class="pr-num">(#12826)</span></td></tr>
+              <tr><td class="date">2023-10-16</td><td class="commit">Update new codes <span class="pr-num">(#12206)</span></td></tr>
+              <tr><td class="date">2023-09-22</td><td class="commit">Add mirror registry from idms when idms support <span class="pr-num">(#11694)</span></td></tr>
+              <tr><td class="date">2023-09-05</td><td class="commit">Fix ocp-22230 <span class="pr-num">(#11282)</span></td></tr>
+              <tr><td class="date">2023-09-01</td><td class="commit">Fix ocp-35998 <span class="pr-num">(#11214)</span></td></tr>
+              <tr><td class="date">2023-08-30</td><td class="commit">Fix ocp-22230 <span class="pr-num">(#11171)</span></td></tr>
+              <tr><td class="date">2023-07-11</td><td class="commit">Fix 24601 in 4.8 <span class="pr-num">(#10471)</span></td></tr>
+              <tr><td class="date">2023-07-04</td><td class="commit">Fix pstupgrade for 24601 <span class="pr-num">(#10334)</span></td></tr>
+              <tr><td class="date">2023-07-03</td><td class="commit">Fix ocp-26401 <span class="pr-num">(#10286)</span></td></tr>
+              <tr><td class="date">2023-04-28</td><td class="commit">Fix cases <span class="pr-num">(#9139)</span></td></tr>
+              <tr><td class="date">2023-04-28</td><td class="commit">Fix 36291, 37498 <span class="pr-num">(#9138)</span></td></tr>
+              <tr><td class="date">2023-04-17</td><td class="commit">Auto ocp-61598 <span class="pr-num">(#8671)</span></td></tr>
+              <tr><td class="date">2023-03-07</td><td class="commit">Fix typo <span class="pr-num">(#7995)</span></td></tr>
+              <tr><td class="date">2023-02-16</td><td class="commit">Auto ocp-59399 <span class="pr-num">(#7716)</span></td></tr>
+              <tr><td class="date">2023-02-13</td><td class="commit">Auto ocp-56209, ocp-56210, ocp-56366 <span class="pr-num">(#7487)</span></td></tr>
+              <tr><td class="date">2023-02-02</td><td class="commit">Backport 16495 to release-4.10 <span class="pr-num">(#7457)</span></td></tr>
+              <tr><td class="date">2023-02-01</td><td class="commit">Auto ocp-57405 <span class="pr-num">(#7300)</span></td></tr>
+              <tr><td class="date">2023-01-12</td><td class="commit">Enhance 45952 to met demand of arm64 cluster <span class="pr-num">(#7192)</span></td></tr>
+              <tr><td class="date">2023-01-09</td><td class="commit">Fix 24160 <span class="pr-num">(#7136)</span></td></tr>
+              <tr><td class="date">2023-01-09</td><td class="commit">Fix upgrade case: 45940 <span class="pr-num">(#7132)</span></td></tr>
+              <tr><td class="date">2023-01-09</td><td class="commit">Fix caseid <span class="pr-num">(#7133)</span></td></tr>
+              <tr><td class="date">2023-01-06</td><td class="commit">Fix 27613 <span class="pr-num">(#7118)</span></td></tr>
+              <tr><td class="date">2023-01-06</td><td class="commit">[Release 4.11] Back-port cases to 4.11 <span class="pr-num">(#6838)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="year-group">
+          <div class="year-label">2022</div>
+          <table>
+            <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+            <tbody>
+              <tr><td class="date">2022-12-30</td><td class="commit">Fix ocp-19196 <span class="pr-num">(#7026)</span></td></tr>
+              <tr><td class="date">2022-12-29</td><td class="commit">Fix 16495 and 19196 <span class="pr-num">(#6989)</span></td></tr>
+              <tr><td class="date">2022-12-27</td><td class="commit">Enhance cases <span class="pr-num">(#6962)</span></td></tr>
+              <tr><td class="date">2022-12-26</td><td class="commit">Fix ocp-24262 <span class="pr-num">(#6919)</span></td></tr>
+              <tr><td class="date">2022-12-22</td><td class="commit">Refactor ocp-27613 <span class="pr-num">(#6828)</span></td></tr>
+              <tr><td class="date">2022-12-09</td><td class="commit">Fix cases <span class="pr-num">(#6678)</span></td></tr>
+              <tr><td class="date">2022-12-08</td><td class="commit">fix_19633 <span class="pr-num">(#6648)</span></td></tr>
+              <tr><td class="date">2022-12-05</td><td class="commit">Fix ocp-16495, ocp-19196 <span class="pr-num">(#6490)</span></td></tr>
+              <tr><td class="date">2022-11-30</td><td class="commit">Fix cases <span class="pr-num">(#6432)</span></td></tr>
+              <tr><td class="date">2022-11-29</td><td class="commit">Auto release-4.10 <span class="pr-num">(#6395)</span></td></tr>
+              <tr><td class="date">2022-11-24</td><td class="commit">[Release-4.11] Cherry-pick ocp-45952 <span class="pr-num">(#6351)</span></td></tr>
+              <tr><td class="date">2022-11-24</td><td class="commit">Cherry-pick release-4.10 <span class="pr-num">(#6353)</span></td></tr>
+              <tr><td class="date">2022-11-24</td><td class="commit">[Release 4.9] Cherry-pick ocp-45952 <span class="pr-num">(#6354)</span></td></tr>
+              <tr><td class="date">2022-11-24</td><td class="commit">Fix ocp-45952 <span class="pr-num">(#6337)</span></td></tr>
+              <tr><td class="date">2022-11-18</td><td class="commit">Fix 27985 <span class="pr-num">(#6174)</span></td></tr>
+              <tr><td class="date">2022-11-17</td><td class="commit">[Release 4.10] Fix ocp-26063 <span class="pr-num">(#6173)</span></td></tr>
+              <tr><td class="date">2022-11-16</td><td class="commit">Auto ocp-19635, ocp-54171 <span class="pr-num">(#6061)</span></td></tr>
+              <tr><td class="date">2022-11-11</td><td class="commit">Fix conflict <span class="pr-num">(#5948)</span></td></tr>
+              <tr><td class="date">2022-11-03</td><td class="commit">Auto OCP-54964 <span class="pr-num">(#5809)</span></td></tr>
+              <tr><td class="date">2022-10-26</td><td class="commit">[release-4.10] Cherry-pick registry cases <span class="pr-num">(#5723)</span></td></tr>
+              <tr><td class="date">2022-10-25</td><td class="commit">Auto ocp-19196 <span class="pr-num">(#5644)</span></td></tr>
+              <tr><td class="date">2022-10-17</td><td class="commit">Fix ocp-22230 <span class="pr-num">(#5470)</span></td></tr>
+              <tr><td class="date">2022-09-30</td><td class="commit">Fix 33051 <span class="pr-num">(#5479)</span></td></tr>
+              <tr><td class="date">2022-09-29</td><td class="commit">Backport cases to release-4.11 <span class="pr-num">(#5489)</span></td></tr>
+              <tr><td class="date">2022-09-23</td><td class="commit">Auto 22945 <span class="pr-num">(#5392)</span></td></tr>
+              <tr><td class="date">2022-09-23</td><td class="commit">Fix cases <span class="pr-num">(#5407)</span></td></tr>
+              <tr><td class="date">2022-09-19</td><td class="commit">Fix cases <span class="pr-num">(#5326)</span></td></tr>
+              <tr><td class="date">2022-09-19</td><td class="commit">Fix ocp-24262 <span class="pr-num">(#5305)</span></td></tr>
+              <tr><td class="date">2022-09-15</td><td class="commit">Fix ocp-39027 <span class="pr-num">(#5297)</span></td></tr>
+              <tr><td class="date">2022-09-15</td><td class="commit">Auto cases <span class="pr-num">(#5269)</span></td></tr>
+              <tr><td class="date">2022-09-09</td><td class="commit">Fix imagestream timeout <span class="pr-num">(#5234)</span></td></tr>
+              <tr><td class="date">2022-09-06</td><td class="commit">Auto ocp-24880 <span class="pr-num">(#5128)</span></td></tr>
+              <tr><td class="date">2022-09-05</td><td class="commit">fix_41414 <span class="pr-num">(#5083)</span></td></tr>
+              <tr><td class="date">2022-08-30</td><td class="commit">Auto ocp-23063 <span class="pr-num">(#4918)</span></td></tr>
+              <tr><td class="date">2022-08-25</td><td class="commit">Refine code according to golangci-lint suggestions <span class="pr-num">(#4925)</span></td></tr>
+              <tr><td class="date">2022-08-24</td><td class="commit">Auto ocp-21988, ocp-27577 <span class="pr-num">(#4865)</span></td></tr>
+              <tr><td class="date">2022-08-22</td><td class="commit">Auto 27575 and 53690 <span class="pr-num">(#4780)</span></td></tr>
+              <tr><td class="date">2022-08-08</td><td class="commit">Fix many cases failed with registry is not ready <span class="pr-num">(#4670)</span></td></tr>
+              <tr><td class="date">2022-08-05</td><td class="commit">eap version is eap73 in less than or equal to 4.9 <span class="pr-num">(#4653)</span></td></tr>
+              <tr><td class="date">2022-02-14</td><td class="commit">Auto 43731 <span class="pr-num">(#1457)</span></td></tr>
+              <tr><td class="date">2022-01-27</td><td class="commit">Fix 24262 <span class="pr-num">(#2540)</span></td></tr>
+              <tr><td class="date">2022-01-18</td><td class="commit">Auto ocp-41400 <span class="pr-num">(#2458)</span></td></tr>
+              <tr><td class="date">2022-01-12</td><td class="commit">Auto OCP-26401 <span class="pr-num">(#2426)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="year-group">
+          <div class="year-label">2021</div>
+          <table>
+            <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+            <tbody>
+              <tr><td class="date">2021-12-28</td><td class="commit">Fix Auto_24838 <span class="pr-num">(#2321)</span></td></tr>
+              <tr><td class="date">2021-12-21</td><td class="commit">Fix OCP-27985 <span class="pr-num">(#2328)</span></td></tr>
+              <tr><td class="date">2021-12-16</td><td class="commit">Fix 27613 <span class="pr-num">(#2307)</span></td></tr>
+              <tr><td class="date">2021-12-16</td><td class="commit">Fix_41414 <span class="pr-num">(#2298)</span></td></tr>
+              <tr><td class="date">2021-12-15</td><td class="commit">Fix 23583 <span class="pr-num">(#2255)</span></td></tr>
+              <tr><td class="date">2021-12-06</td><td class="commit">Auto ocp-39028 <span class="pr-num">(#2188)</span></td></tr>
+              <tr><td class="date">2021-11-22</td><td class="commit">Auto ocp-45952 <span class="pr-num">(#2124)</span></td></tr>
+              <tr><td class="date">2021-11-09</td><td class="commit">Simple code <span class="pr-num">(#2036)</span></td></tr>
+              <tr><td class="date">2021-10-29</td><td class="commit">Auto OCP-21593 <span class="pr-num">(#1961)</span></td></tr>
+              <tr><td class="date">2021-10-18</td><td class="commit">Fix 35292 <span class="pr-num">(#1912)</span></td></tr>
+              <tr><td class="date">2021-10-13</td><td class="commit">Fix 35906 <span class="pr-num">(#1858)</span></td></tr>
+              <tr><td class="date">2021-09-18</td><td class="commit">Fix cases <span class="pr-num">(#1673)</span></td></tr>
+              <tr><td class="date">2021-09-03</td><td class="commit">Auto OCP-27961, OCP-44113 <span class="pr-num">(#1450)</span></td></tr>
+              <tr><td class="date">2021-08-26</td><td class="commit">Auto 35292 <span class="pr-num">(#1392)</span></td></tr>
+              <tr><td class="date">2021-08-18</td><td class="commit">Add bz1976112 scenario to 35906 <span class="pr-num">(#1357)</span></td></tr>
+              <tr><td class="date">2021-08-16</td><td class="commit">Auto OCP-24262 <span class="pr-num">(#1304)</span></td></tr>
+              <tr><td class="date">2021-08-16</td><td class="commit">Auto OCP-27613 <span class="pr-num">(#1341)</span></td></tr>
+              <tr><td class="date">2021-07-28</td><td class="commit">Auto 36291 <span class="pr-num">(#1268)</span></td></tr>
+              <tr><td class="date">2021-07-27</td><td class="commit">Auto OCP-36291 <span class="pr-num">(#1252)</span></td></tr>
+              <tr><td class="date">2021-07-20</td><td class="commit">Auto OCP-35906 <span class="pr-num">(#1167)</span></td></tr>
+              <tr><td class="date">2021-07-16</td><td class="commit">Auto OCP-39027 <span class="pr-num">(#1221)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="year-group">
+          <div class="year-label">2020</div>
+          <table>
+            <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+            <tbody>
+              <tr><td class="date">2020-11-27</td><td class="commit">Auto OCP-29780 <span class="pr-num">(#266)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ul class="contrib-list" style="margin-top:16px">
+          <li><strong><span class="lang-en">LWS Test Automation</span><span class="lang-cn">LWS 测试自动化</span></strong>: <span class="lang-en">Added LWS examples and CatalogSource-based LWS Operator installation tests (2025)</span><span class="lang-cn">新增 LWS 示例和基于 CatalogSource 的 LWS Operator 安装测试（2025）</span></li>
+          <li><strong><span class="lang-en">OCP Test Automation</span><span class="lang-cn">OCP 测试自动化</span></strong>: <span class="lang-en">Continuously automated OCP bug verification cases throughout the contribution period</span><span class="lang-cn">在整个贡献周期内持续自动化 OCP Bug 验证用例</span></li>
+          <li><strong><span class="lang-en">Image Registry Testing</span><span class="lang-cn">镜像仓库测试</span></strong>: <span class="lang-en">Fixed imagestream timeouts and registry unavailability failures (2022–2024)</span><span class="lang-cn">修复 imagestream 超时和镜像仓库不可用故障（2022–2024）</span></li>
+          <li><strong><span class="lang-en">Multi-version Backports</span><span class="lang-cn">多版本回移</span></strong>: <span class="lang-en">Cherry-picked test cases to 4.8 / 4.9 / 4.10 / 4.11 / 4.18 / 4.19</span><span class="lang-cn">将测试用例回移至 4.8 / 4.9 / 4.10 / 4.11 / 4.18 / 4.19 等版本</span></li>
+          <li><strong><span class="lang-en">arm64 Support</span><span class="lang-cn">arm64 支持</span></strong>: <span class="lang-en">Enhanced tests to support arm64 clusters (2023)</span><span class="lang-cn">增强测试以支持 arm64 集群（2023）</span></li>
+          <li><strong><span class="lang-en">HCP Cluster Adaptation</span><span class="lang-cn">HCP 集群适配</span></strong>: <span class="lang-en">Skipped test cases incompatible with HCP clusters (2025)</span><span class="lang-cn">跳过与 HCP 集群不兼容的测试用例（2025）</span></li>
+          <li><strong><span class="lang-en">Code Quality</span><span class="lang-cn">代码质量</span></strong>: <span class="lang-en">Refactored code per golangci-lint recommendations (2022)</span><span class="lang-cn">按 golangci-lint 建议重构代码（2022）</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 5. release -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>5. <a href="https://github.com/openshift/release" target="_blank">release</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem">OpenShift CI/Release Configuration</span></h2>
+        <span class="badge">111 commits</span>
+        <span class="lang-badge">YAML / Shell</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/release → openshift/release</span>
+          <span class="tag type">Prow Jobs / CI Operator / Step Registry</span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message (Merged PRs)</span><span class="lang-cn">提交信息（已合并 PR）</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2026-03-24</td><td class="commit">Revert 75520 <span class="pr-num">(#76705)</span></td></tr>
+            <tr><td class="date">2026-03-20</td><td class="commit">Update hypershift azure e2e config and commands <span class="pr-num">(#75520)</span></td></tr>
+            <tr><td class="date">2026-03-18</td><td class="commit">Add ci for installation self-managed azure hcp with product cli <span class="pr-num">(#73981)</span></td></tr>
+            <tr><td class="date">2026-01-21</td><td class="commit">Fix: Remove redundant NodePool wait in pull-secret update <span class="pr-num">(#73721)</span></td></tr>
+            <tr><td class="date">2026-01-05</td><td class="commit">OCPQE-31370: Fix azure lease auth mode <span class="pr-num">(#72999)</span></td></tr>
+            <tr><td class="date">2025-12-09</td><td class="commit">Fix packagemanifest <span class="pr-num">(#72324)</span></td></tr>
+            <tr><td class="date">2025-12-08</td><td class="commit">Add steps for installing jobset operator in disconnected cluster <span class="pr-num">(#72161)</span></td></tr>
+            <tr><td class="date">2025-11-17</td><td class="commit">Fix conflicts <span class="pr-num">(#71326)</span></td></tr>
+            <tr><td class="date">2025-09-09</td><td class="commit">Add IPv2OVNKubernetesConfig ci <span class="pr-num">(#68705)</span></td></tr>
+            <tr><td class="date">2025-07-14</td><td class="commit">Check dns test <span class="pr-num">(#66596)</span></td></tr>
+            <tr><td class="date">2025-05-29</td><td class="commit">Rebase <span class="pr-num">(#64900)</span></td></tr>
+            <tr><td class="date">2024-11-22</td><td class="commit">Move function place and enhance it <span class="pr-num">(#59049)</span></td></tr>
+            <tr><td class="date">2024-02-05</td><td class="commit">Test image pull issues <span class="pr-num">(#46239)</span></td></tr>
+            <tr><td class="date">2024-01-09</td><td class="commit">OCPQE-18597: Config registry storage in disconnect nutanix profile <span class="pr-num">(#47159)</span></td></tr>
+            <tr><td class="date">2024-01-02</td><td class="commit">OCPQE-18524: Fix registry with nutanix object storage <span class="pr-num">(#44567)</span></td></tr>
+            <tr><td class="date">2023-12-14</td><td class="commit">Support private endpoint for registry when install a private azure cluster <span class="pr-num">(#46522)</span></td></tr>
+            <tr><td class="date">2023-11-21</td><td class="commit">OCPQE-17830: Fix set-sample-operator-disconnected on aws-ipi-disconnected-sts-basecap-none profile <span class="pr-num">(#45365)</span></td></tr>
+            <tr><td class="date">2023-10-11</td><td class="commit">Fix conflict <span class="pr-num">(#43694)</span></td></tr>
+            <tr><td class="date">2023-02-14</td><td class="commit">[OCPQE-13915] Add registry storage pvc for special vsphere cluster <span class="pr-num">(#36298)</span></td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><strong><span class="lang-en">HyperShift on Azure</span><span class="lang-cn">Azure 上的 HyperShift</span></strong>: <span class="lang-en">Added CI pipeline for Azure HCP self-managed installation and updated Azure e2e configuration</span><span class="lang-cn">新增 Azure HCP 自管理安装的 CI 流水线并更新 Azure e2e 配置</span></li>
+          <li><strong><span class="lang-en">Disconnected Environments</span><span class="lang-cn">离线环境</span></strong>: <span class="lang-en">Added CI steps for installing JobSet Operator in disconnected clusters</span><span class="lang-cn">新增在离线集群中安装 JobSet Operator 的 CI 步骤</span></li>
+          <li><strong><span class="lang-en">Nutanix Storage</span><span class="lang-cn">Nutanix 存储</span></strong>: <span class="lang-en">Configured Nutanix object storage and disconnected image registry CI</span><span class="lang-cn">配置 Nutanix 对象存储和离线镜像仓库 CI</span></li>
+          <li><strong><span class="lang-en">OVN Networking</span><span class="lang-cn">OVN 网络</span></strong>: <span class="lang-en">Added IPv2OVNKubernetesConfig CI configuration</span><span class="lang-cn">新增 IPv2OVNKubernetesConfig CI 配置</span></li>
+          <li><strong><span class="lang-en">Bug Fixes</span><span class="lang-cn">缺陷修复</span></strong>: <span class="lang-en">Fixed Azure lease auth mode, NodePool wait logic, packagemanifest issues</span><span class="lang-cn">修复 Azure 租约认证模式、NodePool 等待逻辑、packagemanifest 等问题</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 6. release-tests -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>6. <a href="https://github.com/openshift/release-tests" target="_blank">release-tests</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem">QE Release Automation Tool</span></h2>
+        <span class="badge">17 commits</span>
+        <span class="lang-badge">Python</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/release-tests → openshift/release-tests</span>
+          <span class="tag type"><span class="lang-en">OAR z-stream Release Automation</span><span class="lang-cn">OAR z-stream 发布自动化</span></span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2023-09-04</td><td class="commit">Refine codes for OCPQE-16445 <span class="pr-num">(#94)</span></td></tr>
+            <tr><td class="date">2023-09-01</td><td class="commit">Fix variable issue <span class="pr-num">(#96)</span></td></tr>
+            <tr><td class="date">2023-08-28</td><td class="commit">OCPQE-16444 Add workflow when job is in queue <span class="pr-num">(#90)</span></td></tr>
+            <tr><td class="date">2023-08-09</td><td class="commit">Add doc and prodsec approve request after drop bugs <span class="pr-num">(#82)</span></td></tr>
+            <tr><td class="date">2023-08-04</td><td class="commit">Add basic func for doc and prodsec approval <span class="pr-num">(#78)</span></td></tr>
+            <tr><td class="date">2023-07-31</td><td class="commit">Fix issue for create test report when errata is not ready <span class="pr-num">(#70)</span></td></tr>
+            <tr><td class="date">2023-07-28</td><td class="commit">Add full url for ad</td></tr>
+            <tr><td class="date">2023-07-26</td><td class="commit">Update status automatically after checking job status <span class="pr-num">(#66)</span></td></tr>
+            <tr><td class="date">2023-07-25</td><td class="commit">Add related signature url to configstore <span class="pr-num">(#59)</span></td></tr>
+            <tr><td class="date">2023-07-25</td><td class="commit">Add command readme <span class="pr-num">(#56)</span></td></tr>
+            <tr><td class="date">2023-07-24</td><td class="commit">Update some tasks status to pass before remove ad to REL PREP <span class="pr-num">(#54)</span></td></tr>
+            <tr><td class="date">2023-07-24</td><td class="commit">Fix release bug check issue <span class="pr-num">(#53)</span></td></tr>
+            <tr><td class="date">2023-07-21</td><td class="commit">Fix push-to-cdn-staging issue <span class="pr-num">(#49)</span></td></tr>
+            <tr><td class="date">2023-06-27</td><td class="commit">Discard signature_check job, check image signature directly <span class="pr-num">(#30)</span></td></tr>
+            <tr><td class="date">2023-06-15</td><td class="commit">Avoid jenkins util error info <span class="pr-num">(#29)</span></td></tr>
+            <tr><td class="date">2023-06-14</td><td class="commit">Add impl stage-testing, image-consistency-check, image-signed-check cmds <span class="pr-num">(#20)</span></td></tr>
+            <tr><td class="date">2023-05-31</td><td class="commit">Design notification structure <span class="pr-num">(#9)</span></td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><strong><span class="lang-en">Release Automation</span><span class="lang-cn">发布自动化</span></strong>: <span class="lang-en">Designed notification structure; implemented stage-testing, image-consistency-check, image-signed-check commands</span><span class="lang-cn">设计通知结构；实现 stage-testing、image-consistency-check、image-signed-check 命令</span></li>
+          <li><strong><span class="lang-en">Approval Workflow</span><span class="lang-cn">审批流程</span></strong>: <span class="lang-en">Added prodsec approval requests, document generation, and README documentation</span><span class="lang-cn">新增 prodsec 审批请求、文档生成和 README 文档</span></li>
+          <li><strong><span class="lang-en">Workflow Enhancements</span><span class="lang-cn">流程增强</span></strong>: <span class="lang-en">Handled queued job workflows; automated Jira task status updates</span><span class="lang-cn">处理排队作业工作流；自动化 Jira 任务状态更新</span></li>
+          <li><strong><span class="lang-en">Bug Fixes</span><span class="lang-cn">缺陷修复</span></strong>: <span class="lang-en">Fixed CDN push, test report generation when Errata not ready, Jenkins error output</span><span class="lang-cn">修复 CDN 推送、Errata 未就绪时测试报告生成、Jenkins 错误输出等问题</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 7. hypershift -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>7. <a href="https://github.com/openshift/hypershift" target="_blank">hypershift</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem">OpenShift HyperShift / ARO HCP</span></h2>
+        <span class="badge">22 commits</span>
+        <span class="lang-badge">Go</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/hypershift → openshift/hypershift</span>
+          <span class="tag type"><span class="lang-en">Hosted Control Plane / Cilium CNI</span><span class="lang-cn">托管控制面 / Cilium CNI</span></span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2026-03-25</td><td class="commit">fix: Skip KMS validation for Azure Self-Managed</td></tr>
+            <tr><td class="date">2026-03-11</td><td class="commit">test(e2e): add Azure utilities for e2e tests</td></tr>
+            <tr><td class="date">2026-03-09</td><td class="commit">chore: update cilium version to 1.15.1</td></tr>
+            <tr><td class="date">2026-01-16</td><td class="commit">refactor(test): CNTRLPLANE-1137: improve wait utilities and remove duplication</td></tr>
+            <tr><td class="date">2026-01-14</td><td class="commit">fix(tekton): use maintained common pipeline for mce-211 jobs</td></tr>
+            <tr><td class="date">2026-01-14</td><td class="commit">refactor(test): CNTRLPLANE-1137: use asset reader pattern for Cilium utilities</td></tr>
+            <tr><td class="date">2025-12-16</td><td class="commit">feat: CNTRLPLANE-1137: Add support for external CNI provider Cilium</td></tr>
+            <tr><td class="date">2025-12-03</td><td class="commit">chore(ci): Sync common-operator-build pipeline with upstream</td></tr>
+            <tr><td class="date">2025-12-02</td><td class="commit">refactor(e2e): Move Cilium utility functions to cilium.go</td></tr>
+            <tr><td class="date">2025-11-28</td><td class="commit">test(e2e): Skip Cilium installation when NodePoolReplicas is 0</td></tr>
+            <tr><td class="date">2025-11-25</td><td class="commit">refactor(e2e): Refactor codes according comments</td></tr>
+            <tr><td class="date">2025-11-20</td><td class="commit">test(e2e): fix TestNodePool test failure when installing cilium as external cni</td></tr>
+            <tr><td class="date">2025-11-16</td><td class="commit">fix: skip OVN-Kubernetes deployment check when NetworkType is Other</td></tr>
+            <tr><td class="date">2025-11-15</td><td class="commit">test(e2e): fix EnsureCNOOperatorConfiguration when networkType is not OVNKubernetes</td></tr>
+            <tr><td class="date">2025-10-22</td><td class="commit">Add e2e cilium test</td></tr>
+            <tr><td class="date">2025-10-21</td><td class="commit">test(e2e): Add e2e test for ARO HCP with Cilium Network Policies</td></tr>
+            <tr><td class="date">2025-05-16</td><td class="commit">Test bug</td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><strong><span class="lang-en">Cilium CNI Integration</span><span class="lang-cn">Cilium CNI 集成</span></strong>: <span class="lang-en">Implemented CNTRLPLANE-1137, adding Cilium as an external CNI provider for HyperShift</span><span class="lang-cn">实现 CNTRLPLANE-1137，为 HyperShift 添加 Cilium 外部 CNI 支持</span></li>
+          <li><strong><span class="lang-en">E2E Testing</span><span class="lang-cn">E2E 测试</span></strong>: <span class="lang-en">Added ARO HCP Cilium network policy E2E tests; fixed NodePool/OVN-related test failures</span><span class="lang-cn">新增 ARO HCP Cilium 网络策略 E2E 测试；修复 NodePool/OVN 相关测试失败</span></li>
+          <li><strong><span class="lang-en">Azure Support</span><span class="lang-cn">Azure 支持</span></strong>: <span class="lang-en">Added Azure KMS skip logic and Azure e2e utility functions</span><span class="lang-cn">新增 Azure KMS 跳过逻辑和 Azure e2e 工具函数</span></li>
+          <li><strong><span class="lang-en">Refactoring</span><span class="lang-cn">代码重构</span></strong>: <span class="lang-en">Extracted Cilium utilities into a dedicated file; improved wait utility helpers</span><span class="lang-cn">将 Cilium 工具函数提取为独立文件；改进等待工具函数</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 8. flexy-templates -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>8. flexy-templates &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem">GitLab · Cluster Deployment Templates</span></h2>
+        <span class="badge">7 commits</span>
+        <span class="lang-badge">YAML / Shell</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang/flexy-templates → aosqe/flexy-templates</span>
+          <span class="tag" style="background:rgba(236,72,153,0.1);border-color:rgba(236,72,153,0.3);color:#ec4899">GitLab: gitlab.cee.redhat.com</span>
+          <span class="tag type"><span class="lang-en">OpenShift QE Environment Provisioning</span><span class="lang-cn">OpenShift QE 环境供给</span></span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2025-05-19</td><td class="commit">Reserve_cluster</td></tr>
+            <tr><td class="date">2024-01-09</td><td class="commit">Fix registry storage</td></tr>
+            <tr><td class="date">2023-12-26</td><td class="commit">[OCPQE-18481] Fix image registry storage on baremetal cluster</td></tr>
+            <tr><td class="date">2022-01-05</td><td class="commit">Add image testsshl to mirror registry</td></tr>
+            <tr><td class="date">2021-09-18</td><td class="commit">Call image_registry_patch to configure image registry storage</td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><strong><span class="lang-en">Image Registry Storage</span><span class="lang-cn">镜像仓库存储</span></strong>: <span class="lang-en">Fixed image registry storage configuration on Baremetal clusters (OCPQE-18481)</span><span class="lang-cn">修复裸金属集群上的镜像仓库存储配置（OCPQE-18481）</span></li>
+          <li><strong><span class="lang-en">Mirror Registry</span><span class="lang-cn">镜像仓库</span></strong>: <span class="lang-en">Added Flexy template configuration for image mirroring</span><span class="lang-cn">新增镜像同步的 Flexy 模板配置</span></li>
+          <li><strong><span class="lang-en">Cluster Reservation</span><span class="lang-cn">集群预留</span></strong>: <span class="lang-en">Added cluster reservation-related configuration</span><span class="lang-cn">新增集群预留相关配置</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 9. geminicli -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>9. <a href="https://github.com/wewang58/geminicli" target="_blank">geminicli</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem"><span class="lang-en">Personal Project</span><span class="lang-cn">个人项目</span></span></h2>
+        <span class="badge">3 commits</span>
+        <span class="lang-badge">Go / Shell</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/geminicli (<span class="lang-en">personal</span><span class="lang-cn">个人</span>)</span>
+          <span class="tag type">Gemini AI CLI Tool</span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2026-02-02</td><td class="commit">Add util/generate-test-plan command</td></tr>
+            <tr><td class="date">2026-01-20</td><td class="commit">docs: separate build examples for hypershift cli, hcp cli, and cpo image</td></tr>
+            <tr><td class="date">2026-01-20</td><td class="commit">feat: initial commit with PR build scripts and README</td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><span class="lang-en">Personal tool integrating Gemini AI with HyperShift CLI / HCP CLI / CPO image build scripts</span><span class="lang-cn">集成 Gemini AI 与 HyperShift CLI / HCP CLI / CPO 镜像构建脚本的个人工具</span></li>
+          <li><span class="lang-en">Added command for automated test plan generation</span><span class="lang-cn">新增自动化测试计划生成命令</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 10. llama-cpp-example -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>10. <a href="https://github.com/wewang58/llama-cpp-example" target="_blank">llama-cpp-example</a> &nbsp;<span style="color:var(--text-muted);font-weight:400;font-size:0.9rem"><span class="lang-en">Personal Project</span><span class="lang-cn">个人项目</span></span></h2>
+        <span class="badge">3 commits</span>
+        <span class="lang-badge">YAML / Shell</span>
+      </div>
+      <div class="section-body">
+        <div class="repo-meta">
+          <span class="tag">wewang58/llama-cpp-example (<span class="lang-en">personal</span><span class="lang-cn">个人</span>)</span>
+          <span class="tag type">LLM Inference / LWS Example</span>
+        </div>
+        <table>
+          <thead><tr><th><span class="lang-en">Date</span><span class="lang-cn">日期</span></th><th><span class="lang-en">Commit Message</span><span class="lang-cn">提交信息</span></th></tr></thead>
+          <tbody>
+            <tr><td class="date">2025-08-04</td><td class="commit">Using lws to deployment AI workloads</td></tr>
+            <tr><td class="date">2025-08-03</td><td class="commit">Update model</td></tr>
+            <tr><td class="date">2025-07-31</td><td class="commit">Add llm.cpp example</td></tr>
+          </tbody>
+        </table>
+        <ul class="contrib-list" style="margin-top:14px">
+          <li><span class="lang-en">Demonstrates how to deploy llama.cpp LLM inference workloads on Kubernetes using LeaderWorkerSet (LWS)</span><span class="lang-cn">演示如何使用 LeaderWorkerSet（LWS）在 Kubernetes 上部署 llama.cpp LLM 推理工作负载</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Summary / Direction grid -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2><span class="lang-en">Focus Areas Summary</span><span class="lang-cn">专注领域总结</span></h2>
+      </div>
+      <div class="section-body">
+        <div class="direction-grid">
+          <div class="direction-card">
+            <h4><span class="lang-en">AI/ML Workloads (LWS / JobSet)</span><span class="lang-cn">AI/ML 工作负载（LWS / JobSet）</span></h4>
+            <div class="repos"><code>lws</code><code>lws-operator</code><code>jobset-operator</code><code>openshift-tests-private</code><code>llama-cpp-example</code></div>
+          </div>
+          <div class="direction-card">
+            <h4><span class="lang-en">HyperShift / ARO HCP / Azure</span><span class="lang-cn">HyperShift / ARO HCP / Azure</span></h4>
+            <div class="repos"><code>hypershift</code><code>release</code><code>openshift-tests-private</code></div>
+          </div>
+          <div class="direction-card">
+            <h4><span class="lang-en">Disconnected Environments</span><span class="lang-cn">离线环境</span></h4>
+            <div class="repos"><code>release</code><code>openshift-tests-private</code></div>
+          </div>
+          <div class="direction-card">
+            <h4><span class="lang-en">QE Release Automation</span><span class="lang-cn">QE 发布自动化</span></h4>
+            <div class="repos"><code>release-tests</code></div>
+          </div>
+          <div class="direction-card">
+            <h4><span class="lang-en">CI Infrastructure</span><span class="lang-cn">CI 基础设施</span></h4>
+            <div class="repos"><code>release</code></div>
+          </div>
+          <div class="direction-card">
+            <h4><span class="lang-en">Cluster Provisioning</span><span class="lang-cn">集群供给</span></h4>
+            <div class="repos"><code>flexy-templates</code></div>
+          </div>
+          <div class="direction-card">
+            <h4><span class="lang-en">Linux & Shell Scripting</span><span class="lang-cn">Linux 与 Shell 脚本</span></h4>
+            <div class="repos"><code>release</code><code>flexy-templates</code><code>geminicli</code><code>openshift-tests-private</code></div>
+          </div>
+          <div class="direction-card">
+            <h4><span class="lang-en">Claude Code / MCP / AI Tooling</span><span class="lang-cn">Claude Code / MCP / AI 工具</span></h4>
+            <div class="repos"><code>MCP Server</code><code>Claude Code Skills</code><code>Jenkins API</code><code>geminicli</code><code>llama-cpp-example</code></div>
+          </div>
+        </div>
+        <p style="margin-top:20px;font-size:0.9rem;color:var(--text-muted);line-height:1.8">
+          <span class="lang-en">Primary focus areas: <strong style="color:var(--text)">AI/ML workload scheduling on OpenShift</strong> (LWS, JobSet Operator), <strong style="color:var(--text)">HyperShift Hosted Control Plane</strong> (ARO HCP, Azure HCP, Cilium CNI), with deep involvement in <strong style="color:var(--text)">QE test automation</strong> and <strong style="color:var(--text)">CI/CD configuration</strong>. Total of <strong style="color:var(--green);font-size:1.1em">430 unique commits</strong> across 10 repositories (2020–2026).</span>
+          <span class="lang-cn">核心专注方向：<strong style="color:var(--text)">OpenShift 上的 AI/ML 工作负载调度</strong>（LWS、JobSet Operator）、<strong style="color:var(--text)">HyperShift 托管控制面</strong>（ARO HCP、Azure HCP、Cilium CNI），并深度参与 <strong style="color:var(--text)">QE 测试自动化</strong>和 <strong style="color:var(--text)">CI/CD 配置</strong>。共计在 10 个仓库贡献 <strong style="color:var(--green);font-size:1.1em">430 次</strong>唯一提交（2020–2026）。</span>
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    <span class="lang-en">Generated: 2026-04-13 &nbsp;·&nbsp; Author: Wen Wang (wewang@redhat.com) &nbsp;·&nbsp; Senior Automation Testing Engineer @ Red Hat</span>
+    <span class="lang-cn">生成日期：2026-04-13 &nbsp;·&nbsp; 作者：王文（wewang@redhat.com）&nbsp;·&nbsp; Red Hat 高级自动化测试工程师</span>
+  </div>
+</footer>
+
+</body>
+</html>
